@@ -1,0 +1,66 @@
+import nltk
+nltk.download()
+
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk import pos_tag
+
+sample_doc = "Life is like a camera. Focus on what's important, capture the good times, develop from the negatives, and if things don't work out, take another shot."
+
+tokenized_words = word_tokenize(sample_doc)
+print("Original Doc/text :\n",sample_doc)
+print("\n\nTokenized Text :\n",tokenized_words)
+
+stop_words = stopwords.words('english')
+print(stop_words)
+
+cleaned_token = []
+for word in tokenized_words:
+    if word not in stop_words:
+        cleaned_token.append(word)
+        
+print("Tokenized sentence without stopword removal :\n",tokenized_words)
+print("\n\nTokenized sentence with stopword removal :\n",cleaned_token)
+
+words = [cleaned_token.lower() for cleaned_token in cleaned_token if cleaned_token.isalpha()] 
+print(words)
+
+stemmer = PorterStemmer()
+port_stemmer_output = [stemmer.stem(words) for words in words]
+print(port_stemmer_output)
+
+lemmatizer = WordNetLemmatizer() 
+lemmatizer_output = [lemmatizer.lemmatize(words) for words in words] 
+print(lemmatizer_output)
+
+tagged = pos_tag(cleaned_token)
+print(tagged)
+
+doc = ["The quick brown fox jumps over the lazy dog",
+       "The lazy cat sleeps on the brown rug",
+       "Brown bears are common in this area",
+       "The quick fox runs faster than the brown dog",
+       "The lazy dog lies down under the brown tree"]
+
+vectorizer = TfidfVectorizer(analyzer = "word", norm = None, use_idf = True, smooth_idf = True)
+Mat = vectorizer.fit(doc)
+vocabulary = Mat.vocabulary_
+
+for word, number in vocabulary.items():
+    print(f"{word}: {number}")
+
+tfidfMat = vectorizer.fit_transform(doc)
+print(tfidfMat)
+
+feature_names = vectorizer.get_feature_names_out()
+print(feature_names)
+
+dense = tfidfMat.todense()
+denselist = dense.tolist()
+
+df = pd.DataFrame(denselist,columns = feature_names)
+df

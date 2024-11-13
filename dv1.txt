@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from seaborn import load_dataset
+import warnings
+warnings.filterwarnings('ignore')
+
+df = load_dataset('titanic')
+df
+
+df.columns
+
+df.info()
+
+df.describe()
+
+df.isnull().sum()
+
+df['age'] = df['age'].fillna(np.mean(df['age']))
+df.drop(['deck'],axis = 1,inplace = True)
+df['embarked'] = df['embarked'].fillna(df['embarked'].mode()[0])
+df['embark_town'] = df['embark_town'].fillna(df['embark_town'].mode()[0])
+df.isnull().sum()
+
+df['age'] = df['age'].astype(int)
+df
+
+sns.catplot(x ="sex", hue ="survived", kind ="count", data = df)
+
+sns.violinplot(x ="sex", y ="age", hue ="survived",data = df, split = True)
+
+plt.figure(figsize=(15, 5))
+
+# Subplot 1
+plt.subplot(1, 3, 1)
+sns.countplot(df['survived'])
+plt.title('Survived')
+
+# Subplot 2
+plt.subplot(1, 3, 2)
+sns.countplot(df['pclass'])
+plt.title('Passenger class Count')
+
+# Subplot 3
+plt.subplot(1, 3, 3)
+sns.countplot(df['embarked'])
+plt.title('Embarked Count')
+
+sns.distplot(df['age'])
+
+sns.jointplot(x = "survived", y = "fare", kind = "scatter", data = df)
+
+plt.figure(figsize=(15, 10))
+sns.catplot(x='pclass', y='fare', data=df, kind='bar', palette='Set1')
+
+plt.figure(figsize=(15, 10))
+sns.histplot(data=df, x='fare', bins=20, kde=True, color='red')
+plt.title('Distribution of Ticket Prices on Titanic')
+plt.xlabel('Fare')
+plt.ylabel('Frequency')
+plt.show()

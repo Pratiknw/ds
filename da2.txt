@@ -1,0 +1,73 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import sklearn
+import warnings
+warnings.filterwarnings('ignore')
+
+df = pd.read_csv('Social_Network_Ads.csv')
+df
+
+df.shape
+
+df.info()
+
+df.columns
+
+df.describe()
+
+X = df.iloc[:, [2, 3]].values
+y = df.iloc[:, 4].values
+X
+y
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=0)
+
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train= sc.fit_transform(X_train)
+X_test = sc.fit_transform(X_test)
+
+X_train
+
+
+
+
+
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression()
+classifier.fit(X_train,y_train)
+
+y_pred = classifier.predict(X_test)
+
+y_pred
+
+from sklearn.metrics import classification_report,confusion_matrix
+cm = confusion_matrix(y_test,y_pred)
+cm
+
+plt.figure(figsize=(10,5))
+sns.heatmap(cm,annot=True,xticklabels=['Not Purchased','Purchased'],yticklabels=['Not Purchased','Purchased'],cmap='inferno')
+plt.ylabel('Prediction')
+plt.xlabel('Actual')
+plt.title("Confusion Matrix")
+plt.show()
+
+
+report = classification_report(y_test,y_pred)
+print(f"Classification report: \n\n {report}")
+
+tp,fn,fp,tn = confusion_matrix(y_test,y_pred,labels = [0,1]).reshape(-1)
+print(f"Outcome Values:\nTrue Positive : {tp} \nFalse Negative : {fn} \nFalse Positive : {fp} \nTrue Negative : {tn} ")
+
+accuracy = (tp + tn)/(tp+fn+fp+tn)
+precision = tp/(tp+fp)
+recall = tp/(tp+fn)
+f1_score = 2/((1/recall) + (1/precision))
+
+print("Accuracy : ",accuracy)
+print("Precision : ",precision)
+print("Recall : ",recall)
+print("F1-Score : ",f1_score)

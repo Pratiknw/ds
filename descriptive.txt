@@ -1,0 +1,58 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from seaborn import load_dataset
+import warnings
+warnings.filterwarnings("ignore")
+
+df = load_dataset('titanic')
+df
+
+df.shape
+
+df.info()
+
+df.isnull().sum()
+
+
+df['age'].fillna(df['age'].mean(),axis = 0,inplace = True)
+df.drop('deck',axis = 1,inplace = True)
+cols = ['embarked','embark_town']
+for col in cols:
+    df[col].fillna(df[col].mode()[0],inplace = True)
+
+
+df.isnull().sum()
+
+df.describe()
+
+grouped_df = df.groupby('sex')['fare'].agg(['mean',    
+                                            'median',  
+                                            'max', 
+                                            'min', 
+                                            'std',
+                                            'var',])   
+
+grouped_df
+
+from seaborn import load_dataset
+
+
+df_iris = load_dataset('iris')
+df_iris
+
+
+df_iris.groupby('species').describe()
+
+df_iris['species'].unique()
+
+setosa_data = df_iris[df_iris['species'] == 'setosa']
+versicolor_data = df_iris[df_iris['species'] == 'versicolor']
+virginica_data = df_iris[df_iris['species'] == 'virginica']
+
+setosa_data.describe()
+
+versicolor_data.describe()
+
+virginica_data.describe()

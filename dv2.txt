@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from seaborn import load_dataset
+import warnings
+warnings.filterwarnings('ignore')
+
+df = load_dataset('titanic')
+df
+
+df.columns
+
+df.info()
+
+df.describe()
+
+df.isnull().sum()
+
+df['age'] = df['age'].fillna(np.mean(df['age']))
+df.drop(['deck'],axis = 1,inplace = True)
+df['embarked'] = df['embarked'].fillna(df['embarked'].mode()[0])
+df['embark_town'] = df['embark_town'].fillna(df['embark_town'].mode()[0])
+df.isnull().sum()
+
+df['age'] = df['age'].astype(int)
+df
+
+plt.figure(figsize=(15, 10))
+sns.boxplot(x='sex', y='age', data=df ,palette= 'Set1')
+plt.title('Distribution of Age with respect to Gender')
+plt.xlabel('Gender')
+plt.ylabel('Age')
+
+plt.figure(figsize=(15, 10))
+sns.boxplot(x='sex', y='age', hue='survived', data=df ,palette= 'Set1')
+plt.title('Distribution of Age with respect to Gender and Survival Status')
+plt.xlabel('Gender')
+plt.ylabel('Age')
+plt.legend(title='Survived', loc='upper right')
+plt.show()

@@ -1,0 +1,92 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from seaborn import load_dataset
+import warnings
+warnings.filterwarnings('ignore')
+
+df = load_dataset('iris')
+df
+
+df.columns
+
+df.info()
+
+df.describe()
+
+df.describe(include = 'object')
+
+df.isnull().sum()
+
+print("The features in the dataset are as follows : ")
+print("1. Sepal length : ", df['sepal_length'].dtype)
+print("2. Sepal width  : ", df['sepal_width'].dtype)
+print("3. Petal length : ", df['petal_length'].dtype)
+print("4. Petal width  : ", df['petal_width'].dtype)
+print("5. Species      : ", df['species'].dtype)
+
+
+plt.figure(figsize=(15, 15))
+
+
+plt.subplot(2, 2, 1)
+sns.histplot(x = df['sepal_length'], kde=True, color= 'red')
+plt.title('Sepal Length')
+
+
+plt.subplot(2, 2, 2)
+sns.histplot(x = df['sepal_width'], kde=True, color= 'green')
+plt.title('Sepal Width')
+
+
+plt.subplot(2, 2, 3)
+sns.histplot(x = df['petal_length'], kde=True, color= 'yellow')
+plt.title('Petal Length')
+
+
+plt.subplot(2, 2, 4)
+sns.histplot(x = df['petal_width'], kde=True, color= 'orange')
+plt.title('Petal Width')
+
+plt.figure(figsize=(15,10))
+sns.boxplot(data=df, orient="v", palette="Set1")
+plt.title("Boxplot of Iris Dataset Features")
+plt.xlabel("Feature")
+plt.ylabel("Value")
+plt.show()
+
+plt.figure(figsize=(15, 15))
+
+
+plt.subplot(2, 2, 1)
+sns.boxplot(x='sepal_length',y='species',data=df, palette = 'Set1')
+plt.title('Species wise Sepal Length')
+
+
+plt.subplot(2, 2, 2)
+sns.boxplot(x='sepal_length',y='species',data=df, palette = 'Set1')
+plt.title('Species wise Sepal Width')
+
+
+plt.subplot(2, 2, 3)
+sns.boxplot(x='sepal_length',y='species',data=df, palette = 'Set1')
+plt.title('Species wise Petal Length')
+
+
+plt.subplot(2, 2, 4)
+sns.boxplot(x='sepal_length',y='species',data=df, palette = 'Set1')
+plt.title('Species wise Petal Width')
+
+def count_outliers(series):
+    Q1 = series.quantile(0.25)
+    Q3 = series.quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    return series[(series < lower_bound) | (series > upper_bound)].count()
+
+outliers_count = df.groupby('species').agg(lambda x: count_outliers(x.dropna()))
+
+print("Count of outliers for each species w.r.t feature:")
+outliers_count
